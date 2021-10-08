@@ -34,10 +34,50 @@ prcp = full_join(prcp2018, prcp2019) %>%
   mutate(month = month.name[month])
 ```
 
-The Mr. Trash Wheel dataset contains `r nrow(trash_wheel)` rows and `r ncol(trash_wheel)`. 
+The Mr. Trash Wheel dataset contains `r nrow(trash_wheel)` observations in `r ncol(trash_wheel)` categories. 
 
-The precipitation dataset contains `r nrow(prcp)` rows and `r ncol(prcp)` columns. 
+The precipitation dataset contains `r nrow(prcp)` rows and `r ncol(prcp)` columns.  
 
 ## Problem 2
 
+```{r}
+pols_month = read_csv("./data/datasets/pols-month.csv") %>% 
+  janitor::clean_names() %>% 
+  separate(mon, into = c("year", "month", "day")) %>% 
+  mutate(month = as.numeric(month), year = as.numeric(year)) %>% 
+  mutate(month = month.name[month]) %>% 
+  mutate(president = ifelse(prez_gop == 0, "dem", "gop")) %>% 
+  select(-c(prez_dem,prez_gop,day))
+```
+
+```{r}
+snp = read_csv("./data/datasets/snp.csv") %>% 
+  separate(date, into = c("month", "day", "year")) %>% 
+  mutate(month = as.numeric(month), year = as.numeric(year)) %>%
+  mutate(year = ifelse(year < 50, year + 2000, year + 1900)) %>% 
+  arrange(year, month) %>% 
+  mutate(month = month.name[month]) %>% 
+  relocate(year, month)
+```
+
+```{r}
+unemploy = read_csv("./data/datasets/unemployment.csv") %>%
+  rename(year = Year) %>%
+  pivot_longer(
+    Jan:Dec,
+    names_to = "month",
+    values_to = "pct_unemployed"
+    ) %>% 
+  mutate(month = match(month, month.abb)) %>% 
+  mutate(month = month.name[month])
+```
+
+```{r}
+list1 = left_join(pols_month, snp)
+list2 = left_join(list1, unemploy)
+```
+
+
 ## Problem 3
+
+
