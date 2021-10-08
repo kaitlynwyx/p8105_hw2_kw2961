@@ -1,0 +1,43 @@
+---
+title: "P8105 HW2"
+output: html_document
+---
+
+```{r}
+library(tidyverse)
+library(tidyr)
+library(dplyr)
+```
+
+## Problem 1
+
+```{r}
+trash_wheel = 
+  readxl::read_excel("./data/TWC.xlsx", sheet = "Mr. Trash Wheel", range = "A2:N535") %>% 
+  janitor::clean_names() %>% 
+  filter(dumpster != "NA") %>% 
+  mutate(sports_balls = round(sports_balls, digits = 0))
+```
+
+```{r}
+prcp2018 = readxl::read_excel("./data/TWC.xlsx", sheet = "2018 Precipitation", skip = 1) %>%
+  janitor::clean_names() %>% 
+  drop_na() %>% 
+  mutate(year = 2018)
+
+prcp2019 = readxl::read_excel("./data/TWC.xlsx", sheet = "2019 Precipitation", skip = 1) %>%
+  janitor::clean_names() %>% 
+  drop_na() %>% 
+  mutate(year = 2019)
+
+prcp = full_join(prcp2018, prcp2019) %>% 
+  mutate(month = month.name[month])
+```
+
+The Mr. Trash Wheel dataset contains `r nrow(trash_wheel)` rows and `r ncol(trash_wheel)`. 
+
+The precipitation dataset contains `r nrow(prcp)` rows and `r ncol(prcp)` columns. 
+
+## Problem 2
+
+## Problem 3
